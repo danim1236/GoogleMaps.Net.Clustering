@@ -8,6 +8,9 @@
     <Authors>DeepThink / GoogleMaps.Net.Clustering</Authors>
     <Product>GoogleMaps.NetStd.Clustering</Product>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryUrl>https://github.com/danim1236/GoogleMaps.NetStd.Clustering</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageProjectUrl>https://github.com/danim1236/GoogleMaps.NetStd.Clustering</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
