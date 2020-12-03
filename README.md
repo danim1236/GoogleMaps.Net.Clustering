@@ -1,17 +1,18 @@
 # GoogleMaps.Net.Clustering
-C# library for clustering map points. This library is very suitable for WebAPI (and similar-type) projects that don't depend on ASP.Net MVC.
+C# .Net Standard 2.0 library for clustering map points. This library is very suitable for WebAPI (and similar-type) projects that don't depend on ASP.Net MVC.
 
 
-![Clustering Img](https://raw.githubusercontent.com/pootzko/GoogleMaps.Net.Clustering/master/cluster-map.png "clustering image")
+![Clustering Img](https://github.com/danim1236/GoogleMaps.NetStd.Clustering/blob/master/cluster-map.png "clustering image")
 
 **Original Lib**  
-This is a fork of [Google Maps Server-side Clustering with C#
+This is a fork of https://github.com/pootzko/GoogleMaps.Net.Clustering
+
+Wich is a fork of [Google Maps Server-side Clustering with C#
 ](https://github.com/kunukn/Google-Maps-Clustering-CSharp) repo. The guys made a fast, working implementation of Google Maps clustering for C#. However, they tightly coupled it with MVC and WebForms where all I needed was a simple C# way to crunch a bunch of simple map points and convert them into cluster points.
 
 **Installation**  
-You can download the [GoogleMaps.Net.Clustering](https://www.nuget.org/packages/GoogleMaps.Net.Clustering/) package to install the latest version of GoogleMaps.Net.Clustering Lib.
+You can download the [GoogleMaps.Net.Clustering](https://www.nuget.org/packages/GoogleMaps.NetStd.Clustering/) package to install the latest version of GoogleMaps.NetStd.Clustering Lib.
 
-Sponsored by [Dovetail Technologies](http://www.dovetail.ie/).
 
 ## Usage
 
