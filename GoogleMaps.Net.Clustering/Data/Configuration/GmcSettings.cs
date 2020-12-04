@@ -29,7 +29,7 @@ namespace GoogleMaps.Net.Clustering.Data.Configuration
             set => _algoConfig = value;
         }
 
-        private GmcSettings()
+        public GmcSettings()
         {
             var local = GetGoogleMapsSection();
             string s;
