@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.9.3</Version>
+    <Version>0.9.4</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>GoogleMaps.NetStd.Clustering</PackageId>
     <Authors>DeepThink / GoogleMaps.Net.Clustering</Authors>
