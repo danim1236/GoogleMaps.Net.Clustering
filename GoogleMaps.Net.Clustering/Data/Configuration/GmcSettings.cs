@@ -12,45 +12,70 @@ namespace GoogleMaps.Net.Clustering.Data.Configuration
     /// </summary>
     public class GmcSettings : IGmcSettings
     {
-        const string GoogleMapsSection = "googleMapsNetClustering";
+        public static bool LoadFromConfigFile { get; set; } = true;
+
+        private const string GoogleMapsSection = "googleMapsNetClustering";
 
         private static IGmcSettings _algoConfig;
 
         /// <summary>
         /// Singleton
         /// </summary>
-        public static IGmcSettings Get => _algoConfig ?? (_algoConfig = new GmcSettings());
+        public static IGmcSettings Get => Settings;
 
-        /// <summary>
-        /// Singleton
-        /// </summary>
-        public static IGmcSettings Set
+        public static IGmcSettings Settings
         {
+            get => _algoConfig ?? (_algoConfig = new GmcSettings());
             set => _algoConfig = value;
         }
 
         public GmcSettings()
         {
-            var local = GetGoogleMapsSection();
-            string s;
+            if (LoadFromConfigFile)
+            {
+                var local = GetGoogleMapsSection();
+                string s;
 
-            GridX = int.Parse(local[s = "GridX"] ?? Throw(s));
-            GridY = int.Parse(local[s = "GridY"] ?? Throw(s));
-            DoShowGridLinesInGoogleMap = bool.Parse(local[s = "DoShowGridLinesInGoogleMap"] ?? Throw(s));
-            OuterGridExtend = int.Parse(local[s = "OuterGridExtend"] ?? Throw(s));
-            DoUpdateAllCentroidsToNearestContainingPoint = bool.Parse(local[s = "DoUpdateAllCentroidsToNearestContainingPoint"] ?? Throw(s));
-            DoMergeGridIfCentroidsAreCloseToEachOther = bool.Parse(local[s = "DoMergeGridIfCentroidsAreCloseToEachOther"] ?? Throw(s));
-            MergeWithin = double.Parse(local[s = "MergeWithin"] ?? Throw(s));
-            MinClusterSize = int.Parse(local[s = "MinClusterSize"] ?? Throw(s));
-            MaxMarkersReturned = int.Parse(local[s = "MaxMarkersReturned"] ?? Throw(s));
-            AlwaysClusteringEnabledWhenZoomLevelLess = int.Parse(local[s = "AlwaysClusteringEnabledWhenZoomLevelLess"] ?? Throw(s));
-            ZoomlevelClusterStop = int.Parse(local[s = "ZoomlevelClusterStop"] ?? Throw(s));
-            MaxPointsInCache = int.Parse(local[s = "MaxPointsInCache"] ?? Throw(s));
-            CacheServices = bool.Parse(local[s = "CacheServices"] ?? Throw(s));
+                GridX = int.Parse(local[s = "GridX"] ?? Throw(s));
+                GridY = int.Parse(local[s = "GridY"] ?? Throw(s));
+                DoShowGridLinesInGoogleMap = bool.Parse(local[s = "DoShowGridLinesInGoogleMap"] ?? Throw(s));
+                OuterGridExtend = int.Parse(local[s = "OuterGridExtend"] ?? Throw(s));
+                DoUpdateAllCentroidsToNearestContainingPoint =
+                    bool.Parse(local[s = "DoUpdateAllCentroidsToNearestContainingPoint"] ?? Throw(s));
+                DoMergeGridIfCentroidsAreCloseToEachOther =
+                    bool.Parse(local[s = "DoMergeGridIfCentroidsAreCloseToEachOther"] ?? Throw(s));
+                MergeWithin = double.Parse(local[s = "MergeWithin"] ?? Throw(s));
+                MinClusterSize = int.Parse(local[s = "MinClusterSize"] ?? Throw(s));
+                MaxMarkersReturned = int.Parse(local[s = "MaxMarkersReturned"] ?? Throw(s));
+                AlwaysClusteringEnabledWhenZoomLevelLess =
+                    int.Parse(local[s = "AlwaysClusteringEnabledWhenZoomLevelLess"] ?? Throw(s));
+                ZoomlevelClusterStop = int.Parse(local[s = "ZoomlevelClusterStop"] ?? Throw(s));
+                MaxPointsInCache = int.Parse(local[s = "MaxPointsInCache"] ?? Throw(s));
+                CacheServices = bool.Parse(local[s = "CacheServices"] ?? Throw(s));
 
-            var types = (local[s = "MarkerTypes"] ?? Throw(s)).Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
-            MarkerTypes = new HashSet<int>();
-            foreach (var type in types) MarkerTypes.Add(int.Parse(type));
+                var types = (local[s = "MarkerTypes"] ?? Throw(s)).Split(new[] {";"},
+                    StringSplitOptions.RemoveEmptyEntries);
+                MarkerTypes = new HashSet<int>();
+                foreach (var type in types) MarkerTypes.Add(int.Parse(type));
+            }
+            else
+            {
+                DoShowGridLinesInGoogleMap = false;
+
+                OuterGridExtend = 0;
+                DoUpdateAllCentroidsToNearestContainingPoint = false;
+                DoMergeGridIfCentroidsAreCloseToEachOther = true;
+                CacheServices = true;
+                MergeWithin = 2.9;
+                MinClusterSize = 2;
+                MaxMarkersReturned = 500;
+                AlwaysClusteringEnabledWhenZoomLevelLess = 2;
+                ZoomlevelClusterStop = 15;
+                GridX = 6;
+                GridY = 5;
+                MarkerTypes = new HashSet<int> {1, 2, 3};
+                MaxPointsInCache = 100000000;
+            }
         }
 
         // Use debug data
