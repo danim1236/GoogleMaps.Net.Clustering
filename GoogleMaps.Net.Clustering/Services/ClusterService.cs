@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using GoogleMaps.Net.Clustering.Algorithm;
-using GoogleMaps.Net.Clustering.Contract;
 using GoogleMaps.Net.Clustering.Data;
 using GoogleMaps.Net.Clustering.Data.Configuration;
 using GoogleMaps.Net.Clustering.Data.Geometry;
 using GoogleMaps.Net.Clustering.Data.Params;
 using GoogleMaps.Net.Clustering.Data.Responses;
-using GoogleMaps.Net.Clustering.Extensions;
 using GoogleMaps.Net.Clustering.Infrastructure;
-using GoogleMaps.Net.Clustering.Services;
 using GoogleMaps.Net.Clustering.Utility;
+using JetBrains.Annotations;
 
 namespace GoogleMaps.Net.Clustering.Services
 {
+    [UsedImplicitly]
     public class ClusterService : IClusterService
     {
         private readonly IPointCollection _pointCollection;
@@ -58,16 +57,16 @@ namespace GoogleMaps.Net.Clustering.Services
                 var markersInput = new MarkersInput(neLat, neLong, swLat, swLong, zoomLevel, filter);
 
                 var grid = GridCluster.GetBoundaryExtended(markersInput);
-                var cacheKeyHelper = string.Format("{0}_{1}_{2}", markersInput.Zoomlevel, markersInput.FilterHashCode(), grid.GetHashCode());
+                var cacheKeyHelper = $"{markersInput.Zoomlevel}_{markersInput.FilterHashCode()}_{grid.GetHashCode()}";
                 var cacheKey = CacheKeys.GetMarkers(cacheKeyHelper.GetHashCode());
 
-                var response = new ClusterMarkersResponse();
+                ClusterMarkersResponse response;
 
                 markersInput.Viewport.ValidateLatLon(); // Validate google map viewport input (should be always valid)
                 markersInput.Viewport.Normalize();
 
                 // Get all points from memory
-                IList<MapPoint> points = _pointCollection.Get(getParams.PointType); // _pointsDatabase.GetPoints();
+                var points = _pointCollection.Get(getParams.PointType); // _pointsDatabase.GetPoints();
 
                 // Filter points
                 points = FilterUtil.FilterByType(
@@ -121,7 +120,7 @@ namespace GoogleMaps.Net.Clustering.Services
                 return new ClusterMarkersResponse
                 {
                     OperationResult = "0",
-                    ErrorMessage = string.Format("MapService says: exception {0}", ex.Message)
+                    ErrorMessage = $"MapService says: exception {ex.Message}"
                 };
             }
         }
@@ -142,7 +141,8 @@ namespace GoogleMaps.Net.Clustering.Services
         /// <summary>
         /// Read Through Cache
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="uid"></param>
+        /// <param name="pointType"></param>
         /// <returns></returns>
         private MarkerInfoResponse GetMarkerInfoResponse(int uid, string pointType = null)
         {
@@ -172,7 +172,7 @@ namespace GoogleMaps.Net.Clustering.Services
                 return new MarkerInfoResponse
                 {
                     OperationResult = "0",
-                    ErrorMessage = string.Format("MapService says: Parsing error param: {0}", ex.Message)
+                    ErrorMessage = $"MapService says: Parsing error param: {ex.Message}"
                 };
             }
         }

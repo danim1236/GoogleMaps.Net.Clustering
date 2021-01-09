@@ -1,5 +1,4 @@
-﻿using GoogleMaps.Net.Clustering.Contract;
-using GoogleMaps.Net.Clustering.Extensions;
+﻿using GoogleMaps.Net.Clustering.Extensions;
 using GoogleMaps.Net.Clustering.Utility;
 using System;
 using System.Runtime.Serialization;
@@ -37,27 +36,27 @@ namespace GoogleMaps.Net.Clustering.Data.Geometry
 
         public override string ToString()
         {
-            return String.Format("Uid: {0}, X:{1}, Y:{2}, MarkerType:{3}, MarkerId:{4}", Uid, X, Y, MarkerType, MarkerId);
+            return $"Uid: {Uid}, X:{X}, Y:{Y}, MarkerType:{MarkerType}, MarkerId:{MarkerId}";
         }
 
         // Used for e.g. serialization to file
         public MapPoint(SerializationInfo info, StreamingContext ctxt)
         {
-            this.Count = 1;
-            this.MarkerId = (int)info.GetValue("MarkerId", typeof(int));
-            this.MarkerType = (int)info.GetValue("MarkerType", typeof(int));
-            this.X = ((string)info.GetValue("X", typeof(string))).ToDouble();
-            this.Y = ((string)info.GetValue("Y", typeof(string))).ToDouble();
+            Count = 1;
+            MarkerId = (int)info.GetValue("MarkerId", typeof(int));
+            MarkerType = (int)info.GetValue("MarkerType", typeof(int));
+            X = ((string)info.GetValue("X", typeof(string))).ToDouble();
+            Y = ((string)info.GetValue("Y", typeof(string))).ToDouble();
         }
 
         // Data returned as Json
         public virtual void GetObjectData(SerializationInfo info, StreamingContext ctxt)
         {
-            info.AddValue("MarkerId", this.MarkerId);
-            info.AddValue("MarkerType", this.MarkerType);
-            info.AddValue("X", this.X);
-            info.AddValue("Y", this.Y);
-            info.AddValue("Count", this.Count);
+            info.AddValue("MarkerId", MarkerId);
+            info.AddValue("MarkerType", MarkerType);
+            info.AddValue("X", X);
+            info.AddValue("Y", Y);
+            info.AddValue("Count", Count);
         }
 
         public int CompareTo(MapPoint other, int dimension)
@@ -65,9 +64,9 @@ namespace GoogleMaps.Net.Clustering.Data.Geometry
             switch (dimension)
             {
                 case 0:
-                    return this.X.CompareTo(other.X);
+                    return X.CompareTo(other.X);
                 case 1:
-                    return this.Y.CompareTo(other.Y);
+                    return Y.CompareTo(other.Y);
                 default:
                     throw new ArgumentException("Invalid dimension.");
             }

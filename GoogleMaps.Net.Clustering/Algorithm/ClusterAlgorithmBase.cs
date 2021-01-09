@@ -6,6 +6,7 @@ using GoogleMaps.Net.Clustering.Data.Configuration;
 using GoogleMaps.Net.Clustering.Data.Geometry;
 using GoogleMaps.Net.Clustering.Extensions;
 using GoogleMaps.Net.Clustering.Utility;
+using JetBrains.Annotations;
 
 namespace GoogleMaps.Net.Clustering.Algorithm
 {
@@ -14,14 +15,14 @@ namespace GoogleMaps.Net.Clustering.Algorithm
     /// </summary>
     internal abstract class ClusterAlgorithmBase
     {
-        protected readonly IList<MapPoint> points;
+        protected readonly IList<MapPoint> Points;
         
         // id, bucket
         public readonly Dictionary<string, Bucket> BucketsLookup = new Dictionary<string, Bucket>();
 
         protected ClusterAlgorithmBase(IList<MapPoint> points)
         {
-            this.points = points;
+            Points = points;
         }
 
         public List<MapPoint> GetClusterResult(Boundary grid)
@@ -89,17 +90,17 @@ namespace GoogleMaps.Net.Clustering.Algorithm
             longSin /= count;
             longCos /= count;
 
-            double radx = 0;
-            double rady = 0;
+            double radX = 0;
+            double radY = 0;
 
             // if both are zero-ish
             if (Math.Abs(longSin - 0) > Numbers.Epsilon && Math.Abs(longCos - 0) > Numbers.Epsilon)
             {
-                radx = Math.Atan2(longSin, longCos);
-                rady = Math.Atan2(latSin, latCos);
+                radX = Math.Atan2(longSin, longCos);
+                radY = Math.Atan2(latSin, latCos);
             }
-            var x = radx.RadianToLatLong();
-            var y = rady.RadianToLatLong();
+            var x = radX.RadianToLatLong();
+            var y = radY.RadianToLatLong();
 
             var centroid = new MapPoint { X = x, Y = y, Count = count };
             return centroid;
@@ -118,7 +119,7 @@ namespace GoogleMaps.Net.Clustering.Algorithm
         public MapPoint GetClosestPoint(MapPoint from, List<MapPoint> list) // O(n)
         {
             var min = double.MaxValue;
-            MapPoint closests = null;
+            MapPoint closest = null;
             foreach (var p in list)
             {
                 var dist = MathTool.Distance(from, p);
@@ -126,12 +127,13 @@ namespace GoogleMaps.Net.Clustering.Algorithm
 
                 // update
                 min = dist;
-                closests = p;
+                closest = p;
             }
-            return closests;
+            return closest;
         }
 
         // Assign all points to nearest cluster
+        [UsedImplicitly]
         public void UpdatePointsByCentroid() // O(n*k)
         {
             // Clear points in the buckets, they will be re-inserted
@@ -140,7 +142,7 @@ namespace GoogleMaps.Net.Clustering.Algorithm
                 bucket.Points.Clear();
             }
 
-            foreach (var p in this.points)
+            foreach (var p in this.Points)
             {
                 var minDist = Double.MaxValue;
                 var index = string.Empty;
@@ -172,8 +174,7 @@ namespace GoogleMaps.Net.Clustering.Algorithm
         // O(n)
         public void UpdateCentroidToNearestContainingPoint(Bucket bucket)
         {
-            if (bucket == null || bucket.Centroid == null ||
-                bucket.Points == null || bucket.Points.Count == 0)
+            if (bucket?.Centroid == null || bucket.Points == null || bucket.Points.Count == 0)
             {
                 return;
             }

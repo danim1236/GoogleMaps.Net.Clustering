@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using GoogleMaps.Net.Clustering.Contract;
 using GoogleMaps.Net.Clustering.Data;
 using GoogleMaps.Net.Clustering.Data.Algo;
 using GoogleMaps.Net.Clustering.Data.Configuration;
 using GoogleMaps.Net.Clustering.Data.Geometry;
-using GoogleMaps.Net.Clustering.Data.Responses;
 using GoogleMaps.Net.Clustering.Extensions;
 using GoogleMaps.Net.Clustering.Utility;
 
@@ -19,7 +17,7 @@ namespace GoogleMaps.Net.Clustering.Algorithm
         private readonly MarkersInput _input;
 
         // Absolut position
-        protected readonly Boundary Grid = new Boundary();
+        protected readonly Boundary Grid;
 
         // Bucket placement calc, grid cluster algo
         protected readonly double DeltaX;
@@ -66,7 +64,7 @@ namespace GoogleMaps.Net.Clustering.Algorithm
             // Relative values, used for adjusting grid size
             var x = MathTool.Half(xZoomLevel1, zoomlevel - 1) / gridX;
             var y = MathTool.Half(yZoomLevel1, zoomlevel - 1) / gridY;
-            return new double[] { x, y };
+            return new[] { x, y };
         }
 
 
@@ -79,8 +77,8 @@ namespace GoogleMaps.Net.Clustering.Algorithm
         public GridCluster(IList<MapPoint> points, MarkersInput input)
             : base(points)
         {
-            this._input = input;
-            double[] deltas = GetDelta(GmcSettings.Get.GridX, GmcSettings.Get.GridY, input.Zoomlevel);
+            _input = input;
+            var deltas = GetDelta(GmcSettings.Get.GridX, GmcSettings.Get.GridY, input.Zoomlevel);
             DeltaX = deltas[0];
             DeltaY = deltas[1];
             Grid = GetBoundaryExtended(input);
@@ -173,7 +171,7 @@ namespace GoogleMaps.Net.Clustering.Algorithm
         // Average running time (m*n)
         // worst case might actually be 
         // ~ O(n^2) if most of centroids are merged, due to centroid re-calculation, very very unlikely
-        void MergeClustersGrid()
+        private void MergeClustersGrid()
         {
             foreach (var key in BucketsLookup.Keys)
             {
@@ -184,6 +182,7 @@ namespace GoogleMaps.Net.Clustering.Algorithm
                 var y = bucket.Idy;
 
                 // get keys for neighbors
+                // ReSharper disable InconsistentNaming
                 var N = GetId(x, y + 1);
                 var NE = GetId(x + 1, y + 1);
                 var E = GetId(x + 1, y);
@@ -192,6 +191,7 @@ namespace GoogleMaps.Net.Clustering.Algorithm
                 var SW = GetId(x - 1, y - 1);
                 var W = GetId(x - 1, y);
                 var NW = GetId(x - 1, y - 1);
+                // ReSharper enable InconsistentNaming
                 var neighbors = new[] { N, NE, E, SE, S, SW, W, NW };
 
                 MergeClustersGridHelper(key, neighbors);
@@ -258,7 +258,7 @@ then the longitudes from 170 to -170 will be clustered together
 
             // The deltaX = 20 example scenario, then set the value 9 to 8 and -10 to -9
 
-            // Similar to if (LatLonInfo.MaxLonValue % deltax == 0) without floating presicion issue
+            // Similar to if (LatLonInfo.MaxLonValue % deltax == 0) without floating precision issue
             if (Math.Abs(LatLongInfo.MaxLonValue % deltaX - 0) < Numbers.Epsilon)
             {
                 overlapMapMaxX--;
@@ -291,7 +291,7 @@ then the longitudes from 170 to -170 will be clustered together
             //    ? FilterUtil.FilterDataByViewport(this.points, Grid)
             //    : this.points;
 
-            IList<MapPoint> filtered = this.points;
+            var filtered = Points;
 
             // Put points in buckets
             foreach (var p in filtered)
