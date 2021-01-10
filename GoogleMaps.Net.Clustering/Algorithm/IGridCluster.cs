@@ -5,7 +5,7 @@ namespace GoogleMaps.Net.Clustering.Algorithm
 {
     internal interface IGridCluster
     {
-        IList<MapPoint> RunCluster();
+        IList<Cluster> RunCluster();
 
         IList<Line> GetPolyLines(); // Google Maps debug lines
     }

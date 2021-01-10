@@ -20,7 +20,7 @@ namespace GoogleMaps.Net.Clustering.Data.Configuration
 
         int AlwaysClusteringEnabledWhenZoomLevelLess { get; }
 
-        int ZoomlevelClusterStop { get; }
+        int ZoomlevelClusterStop { get; set; }
 
         int GridX { get; }
 

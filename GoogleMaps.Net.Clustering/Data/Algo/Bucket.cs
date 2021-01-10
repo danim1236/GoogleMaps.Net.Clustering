@@ -3,17 +3,17 @@ using GoogleMaps.Net.Clustering.Data.Geometry;
 
 namespace GoogleMaps.Net.Clustering.Data.Algo
 {
-    internal class Bucket
+    public class Bucket
     {
-        public string Id { get; private set; }
+        public string Id { get; }
 
-        public List<MapPoint> Points { get; private set; }
+        public List<MapPoint> Points { get; }
 
         public MapPoint Centroid { get; set; }
 
         public int Idx { get; private set; }
 
-        public int Idy { get; private set; }
+        public int Idy { get; }
 
         public double ErrorLevel { get; set; } // clusterpoint and points avg dist
 
@@ -21,8 +21,8 @@ namespace GoogleMaps.Net.Clustering.Data.Algo
 
         public bool IsUsed
         {
-            get { return _isUsed && Centroid != null; }
-            set { _isUsed = value; }
+            get => _isUsed && Centroid != null;
+            set => _isUsed = value;
         }
 
         public Bucket(string id)

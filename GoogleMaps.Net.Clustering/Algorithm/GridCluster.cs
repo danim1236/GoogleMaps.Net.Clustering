@@ -284,7 +284,7 @@ then the longitudes from 170 to -170 will be clustered together
         }
 
 
-        public IList<MapPoint> RunCluster()
+        public IList<Cluster> RunCluster()
         {
             // Skip points outside the grid, not visible to user then skip those
             //IList<MapPoint> filtered = ClusterInfo.DoFilterData(this._jsonReceive.Zoomlevel) // TODO: by kit

@@ -83,9 +83,10 @@ namespace GoogleMaps.Net.Clustering.Services
                     || GmcSettings.Get.AlwaysClusteringEnabledWhenZoomLevelLess > markersInput.Zoomlevel;
 
                 // Clustering
-                if (clusteringEnabled && markersInput.Zoomlevel < GmcSettings.Get.ZoomlevelClusterStop)
+                if (clusteringEnabled && (GmcSettings.Get.ZoomlevelClusterStop == 0 ||
+                                          markersInput.Zoomlevel < GmcSettings.Get.ZoomlevelClusterStop))
                 {
-                    IList<MapPoint> markers = clusterAlgo.RunCluster();
+                    var markers = clusterAlgo.RunCluster();
 
                     response = new ClusterMarkersResponse
                     {
@@ -98,7 +99,8 @@ namespace GoogleMaps.Net.Clustering.Services
                     // If we are here then there are no clustering
                     // The number of items returned is restricted to avoid json data overflow
                     IList<MapPoint> filteredDataset = FilterUtil.FilterDataByViewport(points, markersInput.Viewport);
-                    IList<MapPoint> filteredDatasetMaxPoints = filteredDataset.Take(GmcSettings.Get.MaxMarkersReturned).ToList();
+                    IList<Cluster> filteredDatasetMaxPoints = filteredDataset.Take(GmcSettings.Get.MaxMarkersReturned)
+                        .Select(_ => new Cluster(new[] {_}, _)).ToList();
 
                     response = new ClusterMarkersResponse
                     {

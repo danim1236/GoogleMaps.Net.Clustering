@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GoogleMaps.Net.Clustering.Data.Algo;
-using GoogleMaps.Net.Clustering.Data.Configuration;
 using GoogleMaps.Net.Clustering.Data.Geometry;
 using GoogleMaps.Net.Clustering.Extensions;
 using GoogleMaps.Net.Clustering.Utility;
@@ -25,33 +24,22 @@ namespace GoogleMaps.Net.Clustering.Algorithm
             Points = points;
         }
 
-        public List<MapPoint> GetClusterResult(Boundary grid)
+        public List<Cluster> GetClusterResult(Boundary grid)
         {
             // Collect used buckets and return the result
-            var clusterPoints = new List<MapPoint>();
 
             // O(m*n)
-            foreach (var item in BucketsLookup)
-            {
-                var bucket = item.Value;
-                if (!bucket.IsUsed) continue;
-
-                if (bucket.Points.Count < GmcSettings.Get.MinClusterSize)
-                {
-                    clusterPoints.AddRange(bucket.Points);
-                }
-                else
-                {
-                    bucket.Centroid.Count = bucket.Points.Count;
-                    clusterPoints.Add(bucket.Centroid);
-                }
-            }
 
             // var filtered = FilterDataset(clusterPoints, grid); // post filter data for client viewport
             // return filtered; //not working properly when zoomed far out.
-            return clusterPoints;  // return not post filtered
+            return (
+                from item in BucketsLookup
+                select item.Value
+                into bucket
+                where bucket.IsUsed
+                select new Cluster(bucket)).ToList();
         }
-        
+
 
         // Circular mean, very relevant for points around New Zealand, where lon -180 to 180 overlap
         // Adapted Centroid Calculation of N Points for Google Maps usage
